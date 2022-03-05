@@ -2,9 +2,9 @@
 
 int main()
 {
-    //mknod() - mkfifo()
-    int fd[2];//0 - lectura 1 - escritura
-    pipe(fd);
+//mknod() - mkfifo()
+int fd[2];//0 - lectura 1 - escritura
+pipe(fd);
 switch(fork())
 {
     case 0: //hijo - recibir
