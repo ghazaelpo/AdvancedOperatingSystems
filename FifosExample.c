@@ -1,19 +1,25 @@
 #include <stdio.h>
 
-int main()
-{
-//mknod() - mkfifo()
-int fd[2];//0 - lectura 1 - escritura
-pipe(fd);
-switch(fork())
-{
-    case 0: //hijo - recibir
-    close(fd[1]);
-    break;
-    
-    default: //padre
-    close(fd[0]);
-    break;
+int main() {
+    int i, pid, status;
+    pid = fork();
+    switch(pid) {
+    case -1:
+        /* An error has occurred */
+        printf("Fork Error");
+        break;
+    case 0:
+        /* This code is executed by the first parent */
+        printf("First child process is born, my pid is %d\n", getpid());
+        printf("First child parent process is %d\n", getppid());
+        for (i=1; i<=10; i++)
+            printf("First child process, iteration: %d\n", i);
+        printf("First child dies quietly.\n");
+        break;
+    default:
+        /* This code is executed by the parent process */
+        printf("Parent process is born, my pid is %d\n", getpid());
+        wait(&status);
+        printf("Parent process dies quietly.\n");
     }
-    return 0;
 }
