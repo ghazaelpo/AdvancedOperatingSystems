@@ -10,9 +10,10 @@ struct Datos{
     int opc;
     char respuesta[100];
 };
+struct Datos info;
 int server(){
     int fdr, fdw;
-    struct Datos info;
+    
     system("mkfifo servidor"); //Abrir conexion
     fdr = open("servidor",O_RDONLY);
     if(fdr ==-1)
@@ -44,11 +45,17 @@ int main(){
         close(fd[1]);
         read(fd[0],buffer,sizeof(buffer));
         printf("%s\n",buffer);
+        if (info.opc == 1){
+            printf("1.- Siteur\n2.- Cervecería Moctezuma\n3.- Gobierno del Estado ");
+        }
+        if (info.opc == 2){
+            printf("1.- Continental\n2.- Bosch\n3.- Osram");
+        }
         break;
         
         default: //padre
         close(fd[0]);
-        strcpy(buffer,"saludos");
+        strcpy(buffer,"\nEmpresas disponibles:");
         write(fd[1],buffer,sizeof(buffer));
         close(fd[1]);
         break;
