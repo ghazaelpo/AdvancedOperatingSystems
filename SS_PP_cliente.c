@@ -23,7 +23,8 @@ int main(){
     scanf("%s", info.nombre);
     strcat(orden,info.nombre);
     system(orden);
-    printf("Bienvenido %s", info.nombre);
+    printf("Bienvenido %s\n", info.nombre);
+    printf("Menu:\n1 = Servicio social\n2)Practicas profesionales\n")
     do{
         printf("opcion");
         scanf("%d", &info.opc);
