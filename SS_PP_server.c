@@ -22,7 +22,7 @@ int main(){
 
     }
     printf("Servidor iniciado\n Bienvenido!\n A que menu deseas ingresar:\n");
-    printf("1)Servicio social\n 2)Practicas profesionales\n");
+    printf(" 1)Servicio social\n 2)Practicas profesionales\n");
     do{
         read(fdr,&info, sizeof(info));
         printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
