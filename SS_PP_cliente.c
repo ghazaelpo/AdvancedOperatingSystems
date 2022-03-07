@@ -28,17 +28,16 @@ int main(){
     system(orden);
     printf("Bienvenido %s\n", info.nombre);
     printf("Menu:\n1 = Servicio social\n2 = Practicas profesionales\n");
-    do{
-        printf("\nselecciona una opcion: ");
-        scanf("%d", &info.opc);
+    
+    printf("\nSelecciona una opcion: ");
+    scanf("%d", &info.opc);
+    
+    write(fdw,&info, sizeof(info));
+    fdr = open(info.nombre, O_RDONLY);
+    read(fdr, &info, sizeof(info));
+    printf("%s\n",info.respuesta);
+    close(fdr);
 
-        write(fdw,&info, sizeof(info));
-        fdr = open(info.nombre, O_RDONLY);
-        read(fdr, &info, sizeof(info));
-        printf("%s\n",info.respuesta);
-        close(fdr);
-    }
-    while(1);
     
     return 0;
 }

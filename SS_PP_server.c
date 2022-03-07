@@ -23,38 +23,35 @@ int server(){
     }
     printf("Servidor iniciado\n Bienvenido!\n A que menu deseas ingresar:\n");
     printf(" 1)Servicio social\n 2)Practicas profesionales\n");
-    do{
-        read(fdr,&info, sizeof(info));
-        printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
-        fdw = open(info.nombre,O_WRONLY);
-        strcpy(info.respuesta,info.nombre);
-        strcat(info.respuesta, ": Esta es tu respuesta\n");
-        write(fdw,&info, sizeof(info));
-        close(fdw);
-    }
-    while(1);
+    printf("\n");
+    read(fdr,&info, sizeof(info));
+    printf("Usuario: %s, opcion %i\n",info.nombre,info.opc);
+    fdw = open(info.nombre,O_WRONLY);
+    write(fdw,&info, sizeof(info));
+    close(fdw);
     
     return 0;
 }
 
 int main(){
     server();
-    
-    int i, pid, status;
-    pid = fork();
-    switch (pid){
-        case -1:
-        printf("Fork error");
-        break;
-
-        case 0:
-        printf("Working on future previews");
-        break;
-
-        default:
-        printf("Continental\nDigitalOnUs\nBosch\nCapgemini");
+    char buffer[100];
+    int fd[2];//0 - lectura 1 - escritura
+    pipe(fd);
+    switch(fork())
+    {
+        case 0: //hijo - recibir
+        close(fd[1]);
+        read(fd[0],buffer,sizeof(buffer));
+        printf("%s\n",buffer);
         break;
         
+        default: //padre
+        close(fd[0]);
+        strcpy(buffer,"saludos");
+        write(fd[1],buffer,sizeof(buffer));
+        close(fd[1]);
+        break;
     }
     return 0;
 }
