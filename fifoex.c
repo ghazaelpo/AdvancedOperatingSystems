@@ -4,7 +4,6 @@ int main()
 {
     int i, pid, status;
     pid = fork();
-    printf(pid);
     switch (pid)
     {
     case -1:
