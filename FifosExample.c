@@ -1,9 +1,11 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
     int i, pid, status;
     pid = fork();
-    switch(pid) {
+    switch (pid)
+    {
     case -1:
         /* An error has occurred */
         printf("Fork Error");
@@ -12,7 +14,7 @@ int main() {
         /* This code is executed by the first parent */
         printf("First child process is born, my pid is %d\n", getpid());
         printf("First child parent process is %d\n", getppid());
-        for (i=1; i<=10; i++)
+        for (i = 1; i <= 10; i++)
             printf("First child process, iteration: %d\n", i);
         printf("First child dies quietly.\n");
         break;
