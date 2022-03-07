@@ -22,7 +22,8 @@ int main(){
 
     }
     do{
-        printf("Servidor iniciado\n");
+        printf("Servidor iniciado\n Bienvenido!\n A que menu deseas ingresar:\n");
+        printf("Servicio social\n 2) Practicas profesionales");
         read(fdr,&info, sizeof(info));
         printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
         fdw = open(info.nombre,O_WRONLY);
