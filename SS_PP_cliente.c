@@ -19,7 +19,6 @@ int main(){
         exit(1);
 
     }
-    printf("Servidor iniciado\n");
     printf("Introduce tu nombre: ");
     scanf("%s", info.nombre);
     strcat(orden,info.nombre);
