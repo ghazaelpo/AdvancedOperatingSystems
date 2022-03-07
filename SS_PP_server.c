@@ -10,7 +10,7 @@ struct Datos{
     int opc;
     char respuesta[100];
 };
-int main(){
+int server(){
     int fdr, fdw;
     struct Datos info;
     system("mkfifo servidor"); //Abrir conexion
@@ -34,5 +34,27 @@ int main(){
     }
     while(1);
     
+    return 0;
+}
+
+int main(){
+    server();
+    
+    int i, pid, status;
+    pid = fork();
+    switch (pid){
+        case -1:
+        printf("Fork error");
+        break;
+
+        case 0:
+        printf("Working on future previews");
+        break;
+
+        default:
+        printf("Continental\nDigitalOnUs\nBosch\nCapgemini");
+        break;
+        
+    }
     return 0;
 }
