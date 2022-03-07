@@ -26,7 +26,7 @@ int main(){
     printf("Bienvenido %s\n", info.nombre);
     printf("Menu:\n1 = Servicio social\n2 = Practicas profesionales\n");
     do{
-        printf("\nslecciona una opcion");
+        printf("\nselecciona una opcion: ");
         scanf("%d", &info.opc);
 
         write(fdw,&info, sizeof(info));
