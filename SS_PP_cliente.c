@@ -1,4 +1,3 @@
-/*pipe con nombre fifo 10k*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -10,28 +9,36 @@ struct Datos{
     int opc;
     char respuesta[100];
 };
-int main(){
-    int fdr, fdw;
+
+int main()
+{
+    int i, pid, status, fdr, fdw;
     struct Datos info;
-    char orden[20] ="mkfifo ";
-    
-    fdw = open("servidor",O_WRONLY);
-
-    switch(fork()){
-        case 0:
-        perror("");
+    system("mkfifo servidor"); //Abrir conexion
+    fdr = open("servidor",O_RDONLY);
+    pid = fork();
+    switch (pid)
+    {
+    case -1:
+        /* An error has occurred */
+        printf("Fork Error");
         break;
 
-        case 1:
-        read(fdr,&info, sizeof(info));
-        printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
-        fdw = open(info.nombre,O_WRONLY);
-        strcpy(info.respuesta,info.nombre);
-        strcat(info.respuesta, ": Esta es tu respuesta\n");
+        break;
+    case 0:
+        /* This code is executed by the first parent */
+        printf("Hola");
+        break;
+    default:
+        /* This code is executed by the parent process */
+        printf("opcion");
+        scanf("%d", &info.opc);
+
         write(fdw,&info, sizeof(info));
-        close(fdw);
-        break;
-    }
+        fdr = open(info.nombre, O_RDONLY);
+        read(fdr, &info, sizeof(info));
+        printf("%s\n",info.respuesta);
+        close(fdr);
 
-    return 0;
+    }
 }
