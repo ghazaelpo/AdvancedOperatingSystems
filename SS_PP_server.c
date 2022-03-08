@@ -36,7 +36,7 @@ int server(){
 
 int main(){
     server();
-    char buffer[100];
+    char buffer[200];
     int fd[2];//0 - lectura 1 - escritura
     pipe(fd);
     switch(fork())
@@ -45,9 +45,11 @@ int main(){
         close(fd[1]);
         read(fd[0],buffer,sizeof(buffer));
         printf("%s\n",buffer);
+        
         if (info.opc == 1){
-            printf("1.- Siteur\n2.- Cervecería Moctezuma\n3.- Gobierno del Estado ");
+            printf("1.- Siteur\n2.- Cervecería Moctezuma\n3.- Gobierno del Estado");
         }
+        
         if (info.opc == 2){
             printf("1.- Continental\n2.- Bosch\n3.- Osram");
         }
