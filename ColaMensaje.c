@@ -28,7 +28,7 @@ int main()
 
     printf("id destino:");
     
-    scanf("%ld",&mensaje.id);
+    scanf("%d",&mensaje.id);
     getchar();
     printf("mensaje:");
     gets(mensaje.msj);

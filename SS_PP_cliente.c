@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+=======
+/*pipe con nombre fifo 10k*/
+>>>>>>> be60e11cfd7da03adeb5f7509b200bb65900d00e
 #include <fcntl.h>
 #include <string.h>
 
@@ -27,16 +31,17 @@ int main(){
     system(orden);
     printf("Bienvenido %s\n", info.nombre);
     printf("Menu:\n1 = Servicio social\n2 = Practicas profesionales\n");
-    
-    printf("\nSelecciona una opcion: ");
-    scanf("%d", &info.opc);
-    
-    write(fdw,&info, sizeof(info));
-    fdr = open(info.nombre, O_RDONLY);
-    read(fdr, &info, sizeof(info));
-    printf("%s\n",info.respuesta);
-    close(fdr);
+    do{
+        printf("\nSelecciona una opcion: ");
+        scanf("%d", &info.opc);
 
+        write(fdw,&info, sizeof(info));
+        fdr = open(info.nombre, O_RDONLY);
+        read(fdr, &info, sizeof(info));
+        printf("%s\n",info.respuesta);
+        close(fdr);
+    }
+    while(1);
     
     return 0;
 }

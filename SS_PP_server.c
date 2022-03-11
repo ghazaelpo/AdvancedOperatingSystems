@@ -12,6 +12,7 @@ struct Datos{
     int opc;
     char respuesta[100];
 };
+<<<<<<< HEAD
 struct info {
     long id;
     char msj[100];
@@ -19,8 +20,11 @@ struct info {
 struct Datos info;
 
 int server(){
+=======
+int main(){
+>>>>>>> be60e11cfd7da03adeb5f7509b200bb65900d00e
     int fdr, fdw;
-    
+    struct Datos info;
     system("mkfifo servidor"); //Abrir conexion
     fdr = open("servidor",O_RDONLY);
     if(fdr ==-1)
@@ -31,6 +35,7 @@ int server(){
     }
     printf("Servidor iniciado\n Bienvenido!\n A que menu deseas ingresar:\n");
     printf(" 1)Servicio social\n 2)Practicas profesionales\n");
+<<<<<<< HEAD
     printf("\n");
     read(fdr,&info, sizeof(info));
     printf("Usuario: %s, opcion %i\n",info.nombre,info.opc);
@@ -97,6 +102,18 @@ int main(){
         write(fd[1],buffer,sizeof(buffer));
         close(fd[1]);
         break;
+=======
+    do{
+        read(fdr,&info, sizeof(info));
+        printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
+        fdw = open(info.nombre,O_WRONLY);
+        strcpy(info.respuesta,info.nombre);
+        strcat(info.respuesta, ": Esta es tu respuesta\n");
+        write(fdw,&info, sizeof(info));
+        close(fdw);
+>>>>>>> be60e11cfd7da03adeb5f7509b200bb65900d00e
     }
+    while(1);
+    
     return 0;
 }
