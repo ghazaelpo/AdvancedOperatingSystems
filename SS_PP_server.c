@@ -1,16 +1,23 @@
-/*pipe con nombre fifo 10k*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
 
 struct Datos{
     char nombre[20];
     int opc;
     char respuesta[100];
 };
+struct info {
+    long id;
+    char msj[100];
+};
 struct Datos info;
+
 int server(){
     int fdr, fdw;
     
@@ -34,6 +41,36 @@ int server(){
     return 0;
 }
 
+int cola()
+{
+    int mq;
+    int yo;
+    struct info mensaje; //yo soy el usuario 1
+    mq = msgget( 123, IPC_CREAT | 600 | IPC_NOWAIT ); 
+
+    perror("");
+    
+    printf("Quien eres: ");
+    scanf("%d",&yo);
+
+    printf("ID destino: ");
+    scanf("%ld",&mensaje.id);
+    getchar();
+
+    printf("Mensaje: ");
+    gets(mensaje.msj);
+
+    msgsnd(mq, &mensaje, sizeof (mensaje), 0 );   // mensaje es una variable de tipo  struct buffer
+    printf("Mensaje enviado");
+    getchar();
+
+    strcpy(mensaje.msj,"");
+    msgrcv(mq, &mensaje, sizeof (mensaje), yo, 0 );
+    printf("El mensaje para mi es: %s\n",mensaje.msj);
+
+    return 0;
+}
+
 int main(){
     server();
     char buffer[200];
@@ -49,15 +86,14 @@ int main(){
         if (info.opc == 1){
             printf("1.- Siteur\n2.- Cervecería Moctezuma\n3.- Gobierno del Estado");
         }
-        
-        if (info.opc == 2){
-            printf("1.- Continental\n2.- Bosch\n3.- Osram");
-        }
         break;
         
         default: //padre
         close(fd[0]);
         strcpy(buffer,"\nEmpresas disponibles:");
+        if (info.opc == 2){
+            cola();
+        }
         write(fd[1],buffer,sizeof(buffer));
         close(fd[1]);
         break;
