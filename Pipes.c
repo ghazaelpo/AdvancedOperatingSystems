@@ -18,9 +18,10 @@ switch(fork())
     read(fd[0],buffer,sizeof(buffer));
     printf("%s\n",buffer);
     break;
+    
     default: //padre
+    
     close(fd[0]);
-
     strcpy(buffer,"saludos");
     write(fd[1],buffer,sizeof(buffer));
     close(fd[1]);

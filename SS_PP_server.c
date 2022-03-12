@@ -1,119 +1,126 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
-struct Datos{
+struct Datos
+{
     char nombre[20];
     int opc;
     char respuesta[100];
 };
-<<<<<<< HEAD
-struct info {
-    long id;
-    char msj[100];
-};
-struct Datos info;
-
-int server(){
-=======
-int main(){
->>>>>>> be60e11cfd7da03adeb5f7509b200bb65900d00e
-    int fdr, fdw;
-    struct Datos info;
-    system("mkfifo servidor"); //Abrir conexion
-    fdr = open("servidor",O_RDONLY);
-    if(fdr ==-1)
-    {
-            perror("");
-        exit(1);
-
-    }
-    printf("Servidor iniciado\n Bienvenido!\n A que menu deseas ingresar:\n");
-    printf(" 1)Servicio social\n 2)Practicas profesionales\n");
-<<<<<<< HEAD
-    printf("\n");
-    read(fdr,&info, sizeof(info));
-    printf("Usuario: %s, opcion %i\n",info.nombre,info.opc);
-    fdw = open(info.nombre,O_WRONLY);
-    write(fdw,&info, sizeof(info));
-    close(fdw);
-    
-    return 0;
-}
-
-int cola()
+struct info
 {
-    int mq;
-    int yo;
-    struct info mensaje; //yo soy el usuario 1
-    mq = msgget( 123, IPC_CREAT | 600 | IPC_NOWAIT ); 
+    long id;
+    char msg[100];
+};
 
-    perror("");
-    
-    printf("Quien eres: ");
-    scanf("%d",&yo);
-
-    printf("ID destino: ");
-    scanf("%ld",&mensaje.id);
-    getchar();
-
-    printf("Mensaje: ");
-    gets(mensaje.msj);
-
-    msgsnd(mq, &mensaje, sizeof (mensaje), 0 );   // mensaje es una variable de tipo  struct buffer
-    printf("Mensaje enviado");
-    getchar();
-
-    strcpy(mensaje.msj,"");
-    msgrcv(mq, &mensaje, sizeof (mensaje), yo, 0 );
-    printf("El mensaje para mi es: %s\n",mensaje.msj);
-
-    return 0;
-}
-
-int main(){
-    server();
-    char buffer[200];
-    int fd[2];//0 - lectura 1 - escritura
-    pipe(fd);
-    switch(fork())
+int main()
+{
+    int fd[2];
+    int fdr, fdw;
+    char buffer[100];
+    struct Datos info;
+    system("mkfifo servidor"); // Abrir conexion
+    fdr = open("servidor", O_RDONLY);
+    if (fdr == -1 | pipe(fd) == -1)
     {
-        case 0: //hijo - recibir
-        close(fd[1]);
-        read(fd[0],buffer,sizeof(buffer));
-        printf("%s\n",buffer);
-        
-        if (info.opc == 1){
-            printf("1.- Siteur\n2.- Cervecería Moctezuma\n3.- Gobierno del Estado");
-        }
-        break;
-        
-        default: //padre
-        close(fd[0]);
-        strcpy(buffer,"\nEmpresas disponibles:");
-        if (info.opc == 2){
-            cola();
-        }
-        write(fd[1],buffer,sizeof(buffer));
-        close(fd[1]);
-        break;
-=======
-    do{
-        read(fdr,&info, sizeof(info));
-        printf("usuario:%s,opcion%i\n",info.nombre,info.opc);
-        fdw = open(info.nombre,O_WRONLY);
-        strcpy(info.respuesta,info.nombre);
-        strcat(info.respuesta, ": Esta es tu respuesta\n");
-        write(fdw,&info, sizeof(info));
-        close(fdw);
->>>>>>> be60e11cfd7da03adeb5f7509b200bb65900d00e
+        perror("");
+        exit(1);
     }
-    while(1);
-    
+
+    printf("------Servidor inicializado------\n");
+    printf("**********Bienvenido**********\nPor favor selecciona una opción:\n");
+    printf("1) Servicio Social\n2) Prácticas profesionales\n");
+
+    read(fdr, &info, sizeof(info));
+    printf("Usuario: %s, opción %i\n", info.nombre, info.opc);
+    fdw = open(info.nombre, O_WRONLY);
+    write(fdw, &info, sizeof(info));
+
+    if (info.opc == 2)
+    {
+
+        int mq;
+        int pid;
+        int id_server = 100;
+        struct info mensaje;
+        mq = msgget(123, IPC_CREAT | 600 | IPC_NOWAIT);
+
+        perror("");
+
+
+        if (mq == -1)
+        {
+            perror("");
+        }
+
+        pid = fork(); // -1, 0 everything before this the son process inherited ,
+                      // PID is return to the father process
+        switch (pid)
+        {
+        case -1:
+            perror("");
+            break;
+        case 0: // son code
+            printf("Proceso hijo Practicas Profesionales %i\n", getpid());
+            printf("Intel\nBosch\nContinental\nCapgemini\nModutram\n");
+
+            int fd_db;
+
+            fd_db = open("pp.txt", O_RDONLY);
+
+            if (fd_db == -1)
+            {
+
+                perror("");
+            }
+            else
+            {
+                read(fd_db, buffer, sizeof(buffer));
+                close(fd_db);
+                mensaje.id = id_server;
+                strcpy(mensaje.msg, buffer);
+                msgsnd(mq, &mensaje, sizeof(mensaje), 0);
+            }
+            break;
+        default:
+            msgrcv(mq, &mensaje, sizeof(mensaje), id_server, 0);
+            printf("El mensaje es: %s\n", mensaje.msg);
+            strcpy(info.respuesta, mensaje.msg);
+            msgctl(mq, IPC_RMID, NULL);
+            break;
+        }
+    }
+
+    if (info.opc == 1)
+    {
+        
+        
+
+        int id = fork();
+        if (id == 0)
+        {
+            
+            close(fd[0]);
+            write(fd[1], &info.opc, sizeof(int));
+            close(fd[1]);
+            close(fdw);
+        }
+
+        else
+        {
+            close(fd[1]);
+            read(fd[0], &info.opc, sizeof(int));
+            close(fd[0]);
+            printf("Proceso hijo Servicio Social: %i\n", id);
+            printf("Siteur\nGobierno de Jalisco\nSAT\n");
+        }
+    }
+
     return 0;
 }
